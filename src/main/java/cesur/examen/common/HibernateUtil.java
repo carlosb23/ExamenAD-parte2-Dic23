@@ -10,8 +10,8 @@ import org.hibernate.cfg.Configuration;
  * EXAMEN DE ACCESO A DATOS
  * Diciembre 2023
  *
- * Nombre del alumno:
- * Fecha:
+ * Nombre del alumno: Carlos Bustos
+ * Fecha: 11/12/23
  *
  * No se permite escribir en consola desde las clases DAO, Service y Utils usando System.out.
  * En su lugar, usa log.info(), log.warning() y log.severe() para mostrar información interna
@@ -35,8 +35,16 @@ public class HibernateUtil {
         try {
 
             /* Complete method here */
-            sessionFactory = null;
+            Configuration configuration = new Configuration();
 
+            configuration.setProperty("hibernate.connection.url", "jdbc:mysql://localhost:3306/examenad");
+            configuration.setProperty("hibernate.connection.username", "root");
+            configuration.setProperty("hibernate.connection.password", "");
+            configuration.setProperty("hibernate.connection.driver_class", "com.mysql.cj.jdbc.Driver");
+
+            Configuration cfg = new Configuration();
+            cfg.configure();
+            sessionFactory = cfg.buildSessionFactory();
             log.info("SessionFactory not created yet!");
         } catch(Exception ex){
             log.severe("Something fails in buildSessionFactory()");

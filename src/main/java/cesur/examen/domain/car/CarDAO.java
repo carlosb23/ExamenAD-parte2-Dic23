@@ -14,8 +14,8 @@ import java.util.List;
  * EXAMEN DE ACCESO A DATOS
  * Diciembre 2023
  *
- * Nombre del alumno:
- * Fecha:
+ * Nombre del alumno: Carlos Bustos
+ * Fecha: 11/12/23
  */
 
 @Log
@@ -24,8 +24,28 @@ public class CarDAO implements DAO<Car> {
     public Car save(Car car) {
 
         /* Implement method here */
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Transaction transaction = null;
+            try {
+                // Comenzar la transacción
+                transaction = session.beginTransaction();
 
-        return car;
+                // Guardar el nuevo coche en la base de datos
+                session.save(car);
+
+                // Commit de la transacción
+                transaction.commit();
+            } catch (Exception e) {
+                // Manejar cualquier excepción que pueda ocurrir durante la transacción
+                if (transaction != null) {
+                    transaction.rollback();
+                }
+                e.printStackTrace();
+            }
+
+
+            return car;
+        }
     }
 
     @Override
@@ -48,15 +68,16 @@ public class CarDAO implements DAO<Car> {
         return null;
     }
 
-    public List<Car> getAllByManufacturer(String manufacturer){
+    public static List<Car> getAllByManufacturer(String manufacturer){
         var out = new ArrayList<Car>();
 
+        try(Session session = HibernateUtil.getSessionFactory().openSession()){
 
-        /* Implement method here */
+            Query<Car> query = session.createQuery("from Car where manufacturer=: m", Car.class);
+            query.setParameter("m",manufacturer);
 
-        return out;
+            out = (ArrayList<Car>) query.getResultList();
+        }
+       return out;
     }
-
-
-
 }
